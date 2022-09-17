@@ -1,5 +1,7 @@
-import re, requests
-from wiktionaryparser.utils import WordData, Definition, RelatedWord
+import re
+import aiohttp
+from async_retrying import retry
+from aiowiktionaryparser.utils import WordData, Definition, RelatedWord
 from bs4 import BeautifulSoup
 from itertools import zip_longest
 from copy import copy
@@ -30,13 +32,10 @@ def is_subheading(child, parent):
             return False
     return True
 
-class WiktionaryParser(object):
+class AioWiktionaryParser(object):
     def __init__(self):
         self.url = "https://en.wiktionary.org/wiki/{}?printable=yes"
         self.soup = None
-        self.session = requests.Session()
-        self.session.mount("http://", requests.adapters.HTTPAdapter(max_retries = 2))
-        self.session.mount("https://", requests.adapters.HTTPAdapter(max_retries = 2))
         self.language = 'english'
         self.current_word = None
         self.PARTS_OF_SPEECH = copy(PARTS_OF_SPEECH)
@@ -276,10 +275,13 @@ class WiktionaryParser(object):
             json_obj_list.append(data_obj.to_json())
         return json_obj_list
 
-    def fetch(self, word, language=None, old_id=None):
+    @retry
+    async def fetch(self, word, language=None):
         language = self.language if not language else language
-        response = self.session.get(self.url.format(word), params={'oldid': old_id})
-        self.soup = BeautifulSoup(response.text.replace('>\n<', '><'), 'html.parser')
+        async with aiohttp.ClientSession() as session:
+            async with session.get(self.url.format(word)) as response:
+                html = await response.text()
+        self.soup = BeautifulSoup(html.replace('>\n<', '><'), 'html.parser')
         self.current_word = word
         self.clean_html()
         return self.get_word_data(language.lower())

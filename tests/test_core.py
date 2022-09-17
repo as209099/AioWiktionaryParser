@@ -1,14 +1,14 @@
 from parameterized import parameterized
 import unittest
 import json
-from wiktionaryparser import WiktionaryParser
+from aiowiktionaryparser import AioWiktionaryParser
 from deepdiff import DeepDiff
 from typing import Dict, List
 import mock
 from urllib import parse
 import os
 
-parser = WiktionaryParser()
+parser = AioWiktionaryParser()
 
 
 tests_dir = os.path.dirname(__file__)

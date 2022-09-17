@@ -1,4 +1,6 @@
-### Wiktionary Parser
+### Async AioWiktionary Parser
+
+This Repository comes from [Wiktionary](https://github.com/Suyash458/WiktionaryParser)
 
 A python project which downloads words from English Wiktionary ([en.wiktionary.org](https://en.wiktionary.org)) and parses articles' content in an easy to use JSON format. Right now, it parses etymologies, definitions, pronunciations, examples, audio links and related words.
 
@@ -27,13 +29,12 @@ A python project which downloads words from English Wiktionary ([en.wiktionary.o
 
 #### Installation
 
-##### Using pip 
-* run `pip install wiktionaryparser`
-
 ##### From Source
 * Clone the repo or download the zip
 * `cd` to the folder
 * run `pip install -r "requirements.txt"`
+* run `python3 -m setup.py build`
+* run `python3 -m setup.py install`
 
 #### Usage
 
@@ -46,19 +47,21 @@ A python project which downloads words from English Wiktionary ([en.wiktionary.o
 #### Examples
 
 ```python
+>>> import asyncio
 >>> from wiktionaryparser import WiktionaryParser
 >>> parser = WiktionaryParser()
->>> word = parser.fetch('test')
->>> another_word = parser.fetch('test', 'french')
->>> parser.set_default_language('french')
->>> parser.exclude_part_of_speech('noun')
->>> parser.include_relation('alternative forms')
+>>> word = 'test'
+>>> task = parser.fetch(word)
+>>> loop = asyncio.get_event_loop()
+>>> word_data:dict = loop.run_until_complete(task)
 ```
 
 #### Requirements
 
  - requests==2.20.0
  - beautifulsoup4==4.4.0
+ - aiohttp
+ - async_retrying
 
 #### Contributions
 
