@@ -4,8 +4,6 @@ This Repository comes from [Wiktionary](https://github.com/Suyash458/WiktionaryP
 
 A python project which downloads words from English Wiktionary ([en.wiktionary.org](https://en.wiktionary.org)) and parses articles' content in an easy to use JSON format. Right now, it parses etymologies, definitions, pronunciations, examples, audio links and related words.
 
-[![Downloads](http://pepy.tech/badge/wiktionaryparser)](http://pepy.tech/project/wiktionaryparser)
-
 #### JSON structure
 
 ```json
@@ -38,7 +36,7 @@ A python project which downloads words from English Wiktionary ([en.wiktionary.o
 
 #### Usage
 
- - Import the WiktionaryParser class.
+ - Import the AioWiktionaryParser class.
  - Initialize an object and use the `fetch("word", "language")` method.
  - The default language is English, it can be changed using the `set_default_language method`.
  - Include/exclude parts of speech to be parsed using `include_part_of_speech(part_of_speech)` and `exclude_part_of_speech(part_of_speech)`
@@ -48,7 +46,7 @@ A python project which downloads words from English Wiktionary ([en.wiktionary.o
 
 ```python
 >>> import asyncio
->>> from wiktionaryparser import WiktionaryParser
+>>> from aiowiktionaryparser import AioWiktionaryParser
 >>> parser = WiktionaryParser()
 >>> word = 'test'
 >>> task = parser.fetch(word)
